@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, CheckCircle, XCircle, Ban, Filter, RefreshCw, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from '../../../lib/motion';
+import { ShieldAlert, CheckCircle, XCircle, Ban, Filter, RefreshCw, Loader2, AlertTriangle } from 'lucide-react';
 import { useWebsocket } from '../../../lib/websocket';
 
 interface ModerationItem {

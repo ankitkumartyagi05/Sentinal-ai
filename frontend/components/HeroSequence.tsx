@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, motion } from '../lib/motion';
 import { Canvas } from '@react-three/fiber';
 import { Sphere, MeshDistortMaterial, OrbitControls, Environment, Text, Trail } from '@react-three/drei';
-import * as THREE from 'three';
 
 const AICoreModel = ({ scrollProgress }: { scrollProgress: number }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef(null);
   
   return (
     <>
@@ -74,13 +73,8 @@ const AICoreModel = ({ scrollProgress }: { scrollProgress: number }) => {
 
 export default function HeroSequence() {
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const [progress, setProgress] = React.useState(0);
-  scrollYProgress.on("change", (v) => setProgress(v));
+  const { scrollYProgress } = useScroll();
+  const progress = typeof scrollYProgress === 'number' ? scrollYProgress : 0;
   
   let phaseText = "AI Engine Initialized";
   let phaseDesc = "The unified core is ready.";
