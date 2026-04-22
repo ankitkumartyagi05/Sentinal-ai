@@ -1,0 +1,36 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "numReplicas": 1
+  },
+  "services": {
+    "backend": {
+      "buildCommand": "pip install -r backend/requirements.txt",
+      "startCommand": "PYTHONPATH=backend uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+      "port": 8000,
+      "env": {
+        "DATABASE_URL": "${{Postgres.DATABASE_URL}}",
+        "REDIS_URL": "${{Redis.REDIS_URL}}"
+      }
+    },
+    "frontend": {
+      "buildCommand": "cd frontend && npm install && npm run build",
+      "startCommand": "cd frontend && npm start",
+      "port": 3000,
+      "env": {
+        "NEXT_PUBLIC_API_URL": "${{backend.PUBLIC_URL}}"
+      }
+    },
+    "worker": {
+      "buildCommand": "pip install -r backend/requirements.txt",
+      "startCommand": "PYTHONPATH=backend celery -A app.workers.celery_app worker --loglevel=info",
+      "env": {
+        "DATABASE_URL": "${{Postgres.DATABASE_URL}}",
+        "REDIS_URL": "${{Redis.REDIS_URL}}"
+      }
+    }
+  }
+}
