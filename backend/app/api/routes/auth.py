@@ -5,6 +5,7 @@ from ..deps import get_db
 from ...models.user import User
 from ...schemas.user import UserCreate, UserResponse
 from ...core.security import verify_password, get_password_hash, create_access_token
+from ...core.config import settings
 from datetime import timedelta
 
 router = APIRouter()
@@ -33,7 +34,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
-    access_token_expires = timedelta(minutes=60)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         subject=user.id, expires_delta=access_token_expires
     )

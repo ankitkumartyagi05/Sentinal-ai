@@ -12,6 +12,7 @@ from ...models.user import User
 from ...models.content import Content
 from ...services.moderation_service import log_moderation
 from ...workers.tasks import process_image_task
+from ...core.config import settings
 
 router = APIRouter()
 
@@ -26,7 +27,7 @@ async def moderate_text(
     # Try to get user from token, but don't fail if not present (for demo)
     user_id = "0"
     try:
-        payload = jwt.decode(token, "supersecretkey123", algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         user_id = payload.get("sub", "0")
     except:
         pass

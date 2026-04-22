@@ -5,6 +5,7 @@ import jwt
 from sqlalchemy.orm import Session
 from ..db.session import SessionLocal
 from ..models.user import User
+from ..core.config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
@@ -17,7 +18,7 @@ def get_db() -> Generator:
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
     try:
-        payload = jwt.decode(token, "supersecretkey123", algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid auth credentials")
@@ -28,4 +29,3 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
-

@@ -18,11 +18,12 @@ app = FastAPI(
 def on_startup():
     init_db()
 
-# Allow CORS for Next.js frontend
+allow_all_origins = settings.BACKEND_CORS_ORIGINS == ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Since it's a demo, allow all
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all_origins else settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=not allow_all_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
